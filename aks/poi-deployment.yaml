@@ -1,0 +1,121 @@
+apiVersion: v1
+data:
+  dbserver: c3Fsc2VydmVyZXV0ODI1MC5kYXRhYmFzZS53aW5kb3dzLm5ldA==
+  password: Q2hhbmdlTWUxIQ==
+  username: c3FsYWRtaW5lVXQ4MjUw
+kind: Secret
+metadata:
+  creationTimestamp: "2022-10-18T19:26:09Z"
+  name: db-user-pass
+  namespace: default
+  resourceVersion: "15195"
+  uid: f7212883-d0f0-4b4c-acc6-f216dad46d16
+type: Opaque
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"poi","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"service":"poi"}},"template":{"metadata":{"labels":{"service":"poi"}},"spec":{"containers":[{"env":[{"name":"SQL_PASSWORD","valueFrom":{"secretKeyRef":{"key":"password","name":"db-user-pass"}}},{"name":"SQL_USER","valueFrom":{"secretKeyRef":{"key":"username","name":"db-user-pass"}}}],"image":"registryeut8250.azurecr.io/poi:1.0","imagePullPolicy":"Always","name":"poi"}]}}}}
+  creationTimestamp: "2022-10-18T19:01:33Z"
+  generation: 2
+  name: poi
+  namespace: default
+  resourceVersion: "14243"
+  uid: 64bd4f91-7ff7-492f-b523-8be45334f428
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      service: poi
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        service: poi
+    spec:
+      containers:
+      - env:
+        - name: SQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: db-user-pass
+        - name: SQL_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: db-user-pass
+        image: registryeut8250.azurecr.io/poi:1.0
+        imagePullPolicy: Always
+        name: poi
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2022-10-18T19:01:40Z"
+    lastUpdateTime: "2022-10-18T19:01:40Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2022-10-18T19:01:33Z"
+    lastUpdateTime: "2022-10-18T19:22:06Z"
+    message: ReplicaSet "poi-85746c9bd4" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"poi-service","namespace":"default"},"spec":{"ports":[{"port":8080,"targetPort":80}],"selector":{"service":"poi"},"type":"ClusterIP"}}
+  creationTimestamp: "2022-10-18T19:01:33Z"
+  name: poi-service
+  namespace: default
+  resourceVersion: "14224"
+  uid: 5fb129d3-c879-44b5-b078-43d2f1b78a41
+spec:
+  clusterIP: 10.0.112.39
+  clusterIPs:
+  - 10.0.112.39
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 80
+  selector:
+    service: poi
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
