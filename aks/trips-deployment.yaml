@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      service: trips
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: trips
+    spec:
+      containers:
+      - name: trips
+        image: registryeut8250.azurecr.io/trips:1.0
+        imagePullPolicy: Always
+        env:
+          - name: SQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: db-user-pass
+          - name: SQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: db-user-pass
+          - name: SQL_SERVER
+            valueFrom:
+              secretKeyRef:
+                key: dbserver
+                name: db-user-pass
+          - name: OPENAPI_DOCS_URI
+            value: 'http://localhost' 
+          - name: DEBUG_LOGGING
+            value: "true"      
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips-service
+  namespace: default
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 80
+  selector:
+    service: trips
+  sessionAffinity: None
+  type: ClusterIP
