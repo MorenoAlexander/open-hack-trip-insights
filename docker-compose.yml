@@ -1,0 +1,36 @@
+version: '3'
+services:
+  poi:
+    container_name: poi
+    image: registryeut8250.azurecr.io/poi:1.0
+    build: 
+      context: src/poi
+      dockerfile: ../../dockerfiles/Dockerfile_3
+
+  trips:
+    container_name: trips
+    image: registryeut8250.azurecr.io/trips:1.0
+    build: 
+      context: src/trips
+      dockerfile: ../../dockerfiles/Dockerfile_4
+
+  tripviewer:
+    container_name: tripviewer
+    image: registryeut8250.azurecr.io/tripviewer:1.0
+    build: 
+      context: src/tripviewer
+      dockerfile: ../../dockerfiles/Dockerfile_1
+
+  user-java:
+    container_name: user-java
+    image: registryeut8250.azurecr.io/user-java:1.0
+    build: 
+      context: src/user-java
+      dockerfile: ../../dockerfiles/Dockerfile_0
+
+  userprofile:
+    container_name: userprofile
+    image: registryeut8250.azurecr.io/userprofile:1.0
+    build: 
+      context: src/userprofile
+      dockerfile: ../../dockerfiles/Dockerfile_2
