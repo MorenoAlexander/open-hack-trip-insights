@@ -19,9 +19,9 @@ spec:
         imagePullPolicy: Always
         env:
           - name: USERPROFILE_API_ENDPOINT
-            value: "http://userprofile-service:8080"
+            value: "http://userprofile-service.api:8080"
           - name: TRIPS_API_ENDPOINT
-            value: "http://trips-service:8080"
+            value: "http://trips-service.api:8080"
 ---
 
 apiVersion: v1
