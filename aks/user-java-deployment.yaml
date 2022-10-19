@@ -13,26 +13,22 @@ spec:
       labels:
         service: userjava
     spec:
+      serviceAccountName: trip-insight-vault-user
       containers:
       - name: userjava
         image: registryeut8250.azurecr.io/user-java:1.0
         imagePullPolicy: Always
-        env:
-          - name: SQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: password
-                name: db-user-pass
-          - name: SQL_USER
-            valueFrom:
-              secretKeyRef:
-                key: username
-                name: db-user-pass
-          - name: SQL_SERVER
-            valueFrom:
-              secretKeyRef:
-                key: dbserver
-                name: db-user-pass        
+        volumeMounts:
+        - name: secrets-store
+          mountPath: "/secrets"
+          readOnly: true  
+      volumes:
+      - name: secrets-store
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "db-user-pass"     
 
 ---
 
