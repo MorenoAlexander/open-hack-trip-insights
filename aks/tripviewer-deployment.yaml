@@ -37,25 +37,5 @@ spec:
   selector:
     app: tripviewer
   sessionAffinity: None
-  type: LoadBalancer
+  type: ClusterIP
 
----
-
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: tripviewer-ingress
-  annotations:
-    kubernetes.io/ingress.class: nginx
-spec:
-  rules:
-  - host: "20.165.176.143"
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: tripviewer
-            port: 
-              number: 8080   
